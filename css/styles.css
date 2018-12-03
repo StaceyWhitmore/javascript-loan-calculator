@@ -1,0 +1,13 @@
+
+/*test styles.css*/
+/*
+body {background-color: lightgray; }
+*/
+
+.output { font-weight: bold; }
+
+#payment { text-decoration: underline; }
+
+#graph { border: solid black 1px; /*Add simple border to chart*/ }
+
+th, td { vertical-align: top; /*Don't center table cells*/ }
