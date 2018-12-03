@@ -52,7 +52,6 @@ const calculate = function() {
 } // close calculate()
 
 // Save user's input props in localStorage object
-
 const save = function(amount, apr, years, zipcode) {
 
   if (window.localStorage) { //only do the following if browser supports it
