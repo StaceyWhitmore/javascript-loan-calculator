@@ -1,4 +1,4 @@
-"use strict";//use strict directive for browsers still using es5 js
+//"use strict";//use strict directive for browsers still using es5 js
 
 const calculate = function() {
   const amount = document.getElementById('amount')
