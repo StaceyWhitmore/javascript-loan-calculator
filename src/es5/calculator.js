@@ -1,26 +1,29 @@
+/*Notice this module makes extensive use of the `var` keyword
+which is frowned upon in subsequent vesrions of JS (e.g ES6+)
+due to its hoisting nature.*/
+
 "use strict";//use strict directive for browsers still using es5 js
 
 function calculate() {
-  //console.log('using let and const  ')
-  const amount = document.getElementById('amount')
-  const apr = document.getElementById('apr')
-  const years = document.getElementById('years')
-  const zipcode = document.getElementById('zipcode')
-  const payment = document.getElementById('payment')
-  const total = document.getElementById('total')
-  const totalinterest = document.getElementById('totalinterest')
+  var amount = document.getElementById('amount')
+  var apr = document.getElementById('apr')
+  var years = document.getElementById('years')
+  var zipcode = document.getElementById('zipcode')
+  var payment = document.getElementById('payment')
+  var total = document.getElementById('total')
+  var totalinterest = document.getElementById('totalinterest')
 
   //Get the inputs from their respective elements and assume they are all valid
   //(this is a basic interest app and so far has no input validation)
   //convert interest from percentage to decimal, and convert from an annual rate
   //tp a monthly rate.
-  let principal = parseFloat(amount.value);
-  let interest = parseFloat(apr.value) / 100 / 12;
-  let payments = parseFloat(years.value) * 12;
+  var principal = parseFloat(amount.value);
+  var interest = parseFloat(apr.value) / 100 / 12;
+  var payments = parseFloat(years.value) * 12;
 
   //compute the monthly pmt figure
-  let x = Math.pow(1 + interest, payments) //(1 + interest) ^number of payments (e.g. 12)
-  let monthly = (principal*x*interest)/(x-1)
+  var x = Math.pow(1 + interest, payments) //(1 + interest) ^number of payments (e.g. 12)
+  var monthly = (principal*x*interest)/(x-1)
 
   //If the result is a finite number, the user's input was good and there
   //are meaningul results to display (remember, no input validation in this version)
@@ -37,6 +40,7 @@ function calculate() {
     //Ads: find and display local lenders, ignoring network errors
     try { // Catch any errors that occur here
       getLenders(amount.value, apr.value, years.value, zipcode.value)
+      console.log('got lenders')
     }
     catch(e) { /* And ignore all those errors*/ }
     // Finally, chare loan balance, interest and Equity payemnts
@@ -85,18 +89,18 @@ function getLenders(amount, apr, years, zipcode) {
   if (!window.XMLHttpRequest) return
 
   //Find the element in which to display the list of lenders
-  const ad = document.getElementById('lenders')
+  var ad = document.getElementById('lenders')
   if (!ad) return      //Quit if there is no element to output it into
 
   //Encode the user's input as query parameters in a URL
-  let url = "getLenders.php"  +  //service url plus
+  var url = "getLenders.php"  +  //service url plus
   "?amt" + encodeURIComponent(amount) + // user data in query string
   "?apr" + encodeURIComponent(apr) +
   "?yrs" + encodeURIComponent(years) +
   "?zip" + encodeURIComponent(zipcode)
 
   //Fetch the contents of that URL using the XMLHttpRequest obeject
-  let req = new XMLHttpRequest() //Begin a new XMLHttpRequest
+  var req = new XMLHttpRequest() //Begin a new XMLHttpRequest
   req.open("GET", url)           //An HTTP GET request for the url
   req.send(null)                 //Send the request with no body. (Blocked by CORS policy)
 
@@ -106,12 +110,12 @@ function getLenders(amount, apr, years, zipcode) {
   req.onreadystatechange = function() {
     if (req.readystate == 4 && req.status == 200) {
       // If we get to this point, we have a complete valid HTTP response
-      let response = req.responseText //Http response as a string
-      let lenders = JSON.parse(response) // Parese it to a JS array
+      var response = req.responseText //Http response as a string
+      var lenders = JSON.parse(response) // Parese it to a JS array
 
       // Convert the array of lender objects to a string of HTML
-      let list = ""
-      for(let i = 0; i < lenders.length; i++) {
+      var list = ""
+      for(var i = 0; i < lenders.length; i++) {
         list += "<li></li><a href='" + lenders[i].url +"'>" +
         lenders[i].name + "</a>"
       }
@@ -130,7 +134,7 @@ function getLenders(amount, apr, years, zipcode) {
 //Chart monthly loan balance, interest and equity in an HTML <canavas> element
 //If called with no args, then just erase the chart that was drawn previously
 function chart(principal, interest, monthly, payments) {
-  const graph = document.getElementById("graph") //get the <canvas> tag
+  var graph = document.getElementById("graph") //get the <canvas> tag
   graph.width = graph.width //Clears and resets the <canvas> element
 
   //If called with no args OR if this current browser doesn't support graphics
@@ -138,8 +142,8 @@ function chart(principal, interest, monthly, payments) {
 if(arguments.length == 0 || !graph.getContext) return;
 
 //Get the context object for the canavas
-let g = graph.getContext("2d") //All drawing is done with this object
-let width = graph.width, height = graph.height //get canvas size (, so `let` only needs to be typed once)
+var g = graph.getContext("2d") //All drawing is done with this object
+var width = graph.width, height = graph.height //get canvas size (, so var only needs to be typed once)
 
 //fns to convert payment numbers and dollar amounts to pixels
 function paymentToX(n) { return n * width/payments; }
@@ -159,12 +163,12 @@ g.font = "bold 12px sans-serif"              //define a font
 g.fillText("Total Interest Payments", 20, 20)//Draw text in legend
 
 //Cummulative eqiuty is non-linear and little more difficult to Chart
-let equity = 0
+var equity = 0
 g.beginPath()                           //Begin a new shapte
 g.moveTo(paymentToX(0), amountToY(0))   //Start at lower-left
-for(let p = 1; p <= payments; p++) {
+for(var p = 1; p <= payments; p++) {
   // for each pmt, figure out how much is interest
-  let thisMonthsInterest = (principal-equity)*interest
+  var thisMonthsInterest = (principal-equity)*interest
   equity += (monthly - thisMonthsInterest)   //The rest goes to Equity
   g.lineTo(paymentToX(p), amountToY(equity)) //line to this point
 } //close for
@@ -175,11 +179,11 @@ g.fill()                                     //...and fill the area under the cu
 g.fillText("Total Equity", 20, 35)           //...and also label it in green
 
 //Loop again, just as above, but chart loan balance as a thick black line
-let bal = principal
+var bal = principal
 g.beginPath()
 g.moveTo(paymentToX(0), amountToY(bal))
-for(let p = 1; p <= payments; p++) {
-  let thisMonthsInterest = bal * interest
+for(var p = 1; p <= payments; p++) {
+  var thisMonthsInterest = bal * interest
   bal -= (monthly - thisMonthsInterest)      //the rest goes to equity
   g.lineTo(paymentToX(p), amountToY(bal))    //draw line to this point
 
@@ -191,9 +195,9 @@ g.fillText("Loan Balance", 20, 50)            //Legend entry
 
 //Now make yearly tick marks and year numbers on X-axis
 g.textAlign = "center"                        //Center text over ticks
-let y = amountToY(0)                           //Y coordinate of X-axis
-for(let year=1; year*12 <= payments; year++) { //For each year ...
-  let x = paymentToX(year*12)                  //compute tick position
+var y = amountToY(0)                           //Y coordinate of X-axis
+for(var year=1; year*12 <= payments; year++) { //For each year ...
+  var x = paymentToX(year*12)                  //compute tick position
   g.fillRect(x-0.5, y-3, 1, 3)                 //Draw the tick
   if (year == 1) g.fillText("year", x, y-5)    //Label the axis
   if (year % 5 == 0 && year*12 !== payments)   //Number every 5 years
@@ -203,10 +207,10 @@ for(let year=1; year*12 <= payments; year++) { //For each year ...
 //Mark pmt amount along the right edge
 g.textAligin = "right"                       //right-justify text
 g.textBaseline = "middle"                     //center it vertically
-let ticks = [monthly*payments, principal]     // 2 point that will be marked
-let rightEdge = paymentToX(payments)          //X-coordinate of y axis
-for (let i=0; i < ticks.length; i++) {        // For each of the two points
-  let y = amountToY(ticks[i])                 //Compute Y position of tick
+var ticks = [monthly*payments, principal]     // 2 point that will be marked
+var rightEdge = paymentToX(payments)          //X-coordinate of y axis
+for (var i=0; i < ticks.length; i++) {        // For each of the two points
+  var y = amountToY(ticks[i])                 //Compute Y position of tick
   g.fillRect(rightEdge-3, y-0.5, 3, 1)        //Draw the tick mark
   g.fillText(String(ticks[i].toFixed(0)),     //...and label it
             rightEdge-5, y)
