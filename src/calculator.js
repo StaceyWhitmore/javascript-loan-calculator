@@ -1,7 +1,6 @@
 "use strict";//use strict directive for browsers still using es5 js
 
-function calculate() {
-  //console.log('using let and const  ')
+const calculate = function() {
   const amount = document.getElementById('amount')
   const apr = document.getElementById('apr')
   const years = document.getElementById('years')
@@ -54,7 +53,8 @@ function calculate() {
 
 // Save user's input props in localStorage object
 
-function save(amount, apr, years, zipcode) {
+const save = function(amount, apr, years, zipcode) {
+
   if (window.localStorage) { //only do the following if browser supports it
     localStorage.loan_amount  = amount
     localStorage.loan_apr     = apr
@@ -80,7 +80,8 @@ window.onload = function() {
 //include an implementation of such a lender-finding service. But if such a service
 //did exist this fn would find it
 
-function getLenders(amount, apr, years, zipcode) {
+const getLenders = function(amount, apr, years, zipcode) {
+
   //If the brownwer doesn't support XMLHttpRequest obejects, then do nothing (ie. `return` with nothing)
   if (!window.XMLHttpRequest) return
 
@@ -129,7 +130,7 @@ function getLenders(amount, apr, years, zipcode) {
 /****************CHART: chart() function****************/
 //Chart monthly loan balance, interest and equity in an HTML <canavas> element
 //If called with no args, then just erase the chart that was drawn previously
-function chart(principal, interest, monthly, payments) {
+const chart = function(principal, interest, monthly, payments) {
   const graph = document.getElementById("graph") //get the <canvas> tag
   graph.width = graph.width //Clears and resets the <canvas> element
 
