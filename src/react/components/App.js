@@ -2,8 +2,9 @@ import '../stylesheets/APP.scss'
 
 
 const App = () =>
-<Fields />
-
-<Graph />
+<div>
+  <Fields />
+  <Graph />
+</div>
 
 export default App
